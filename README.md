@@ -1,6 +1,6 @@
-# diffparser
+# difflib-parser
 
-Parser for Python's difflib. Built on top of https://github.com/yebrahim/difflibparser/blob/master/difflibparser.py
+Parser for Python's `difflib`. Built on top of https://github.com/yebrahim/difflibparser/blob/master/difflibparser.py
 
 Key changes made to the above library:
 

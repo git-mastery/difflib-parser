@@ -3,8 +3,8 @@ requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
-name = "diffparser"
-version = "0.0.1"
+name = "difflib-parser"
+version = "0.0.3"
 authors = [{ name = "Jiahao, Woo", email = "woojiahao1234@gmail.com" }]
 description = "Lightweight Python package for parsing Python difflib's diff results"
 readme = "README.md"
@@ -18,5 +18,5 @@ classifiers = [
 license.file = "LICENSE"
 
 [project.urls]
-Homepage = "https://github.com/git-mastery/diffparser"
-Issues = "https://github.com/git-mastery/diffparser/issues"
+Homepage = "https://github.com/git-mastery/difflib-parser"
+Issues = "https://github.com/git-mastery/difflib-parser/issues"
