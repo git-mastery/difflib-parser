@@ -21,3 +21,7 @@ license.file = "LICENSE"
 Homepage = "https://github.com/git-mastery/difflib-parser.git"
 Repository = "https://github.com/git-mastery/difflib-parser.git"
 Issues = "https://github.com/git-mastery/difflib-parser/issues"
+
+[tool.pytest.ini_options]
+addopts = ["--import-mode=importlib"]
+pythonpath = ["src"]
