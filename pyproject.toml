@@ -18,5 +18,6 @@ classifiers = [
 license.file = "LICENSE"
 
 [project.urls]
-Homepage = "https://github.com/git-mastery/difflib-parser"
+Homepage = "https://github.com/git-mastery/difflib-parser.git"
+Repository = "https://github.com/git-mastery/difflib-parser.git"
 Issues = "https://github.com/git-mastery/difflib-parser/issues"
