@@ -67,9 +67,6 @@ class Diff:
 
 
 # Parser inspired by https://github.com/yebrahim/difflibparser/blob/master/difflibparser.py
-# Rather than relying on the iterator pattern, we're opting to use the generator pattern instead to avoid managing an
-# "end of diff" exception
-# Also included several code refactors to clean up the general code structure
 class DiffParser:
     def __init__(self, left_text, right_text):
         self.__left_text = left_text
