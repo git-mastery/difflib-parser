@@ -11,7 +11,6 @@ class DiffLineCode(Enum):
 class DiffLine:
     def __init__(self, line: str | None):
         self.__line = line
-        print(self.__line)
 
     @staticmethod
     def parse(line: str | None) -> "DiffLine":
@@ -31,6 +30,8 @@ class DiffLine:
                 return DiffLineCode.COMMON
             case "? ":
                 return DiffLineCode.MISSING
+
+        return None
 
     @property
     def line(self) -> str | None:

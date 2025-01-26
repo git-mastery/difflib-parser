@@ -1,7 +1,7 @@
-from typing import List, Generator, Any
 import difflib
-from enum import Enum
 from dataclasses import dataclass
+from enum import Enum
+from typing import Iterator, List
 
 from difflib_parser.diff_line import DiffLine, DiffLineCode
 
@@ -38,10 +38,13 @@ class DiffParser:
         self.__diff = list(difflib.ndiff(self.__left_text, self.__right_text))
         self.__line_no = 0
 
-    def iter_diffs(self) -> Generator[Diff, Any, Any]:
+    def iter_diffs(self) -> Iterator[Diff]:
+        current_line = self.__diff[self.__line_no]
         while self.__line_no < len(self.__diff):
-            current_line = self.__diff[self.__line_no]
             diff_line = DiffLine.parse(current_line)
+            if diff_line.line is None:
+                self.__line_no += 1
+                continue
             code = diff_line.code
             diff = Diff(code=DiffCode.SAME, line=diff_line.line)
 
@@ -78,11 +81,13 @@ class DiffParser:
             DiffLineCode.ADDED,
             DiffLineCode.MISSING,
         ]
+        # We can ignore all of these lines because we know that a None line would have
+        # been skipped
         if self.__match_pattern(lines, pattern_a):
             return DiffChange(
-                left=[i for (i, c) in enumerate(b.line) if c in ["-", "^"]],
-                right=[i for (i, c) in enumerate(d.line) if c in ["+", "^"]],
-                newline=c.line,
+                left=[i for (i, c) in enumerate(b.line) if c in ["-", "^"]],  # type: ignore
+                right=[i for (i, c) in enumerate(d.line) if c in ["+", "^"]],  # type: ignore
+                newline=c.line,  # type: ignore
                 skip_lines=3,
             )
 
@@ -91,8 +96,8 @@ class DiffParser:
         if self.__match_pattern(lines, pattern_b):
             return DiffChange(
                 left=[],
-                right=[i for (i, c) in enumerate(c.line) if c in ["+", "^"]],
-                newline=b.line,
+                right=[i for (i, c) in enumerate(c.line) if c in ["+", "^"]],  # type: ignore
+                newline=b.line,  # type: ignore
                 skip_lines=2,
             )
 
@@ -100,9 +105,9 @@ class DiffParser:
         pattern_c = [DiffLineCode.REMOVED, DiffLineCode.MISSING, DiffLineCode.ADDED]
         if self.__match_pattern(lines, pattern_c):
             return DiffChange(
-                left=[i for (i, c) in enumerate(b.line) if c in ["-", "^"]],
+                left=[i for (i, c) in enumerate(b.line) if c in ["-", "^"]],  # type: ignore
                 right=[],
-                newline=c.line,
+                newline=c.line,  # type: ignore
                 skip_lines=2,
             )
 

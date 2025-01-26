@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "difflib-parser"
-version = "1.0.0"
+version = "1.2.0"
 authors = [{ name = "Jiahao, Woo", email = "woojiahao1234@gmail.com" }]
 description = "Lightweight Python package for parsing Python difflib's diff results"
 readme = "README.md"
