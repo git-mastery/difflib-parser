@@ -39,8 +39,8 @@ class DiffParser:
         self.__line_no = 0
 
     def iter_diffs(self) -> Iterator[Diff]:
-        current_line = self.__diff[self.__line_no]
         while self.__line_no < len(self.__diff):
+            current_line = self.__diff[self.__line_no]
             diff_line = DiffLine.parse(current_line)
             if diff_line.line is None:
                 self.__line_no += 1
