@@ -2,3 +2,5 @@ pytest
 twine
 build
 mypy
+toml
+types-toml
