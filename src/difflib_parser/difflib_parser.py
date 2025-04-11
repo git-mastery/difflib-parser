@@ -1,49 +1,27 @@
 import difflib
-from dataclasses import dataclass
-from enum import Enum
 from typing import Iterator, List
 
-from difflib_parser.diff_line import DiffLine, DiffLineCode
-
-
-class DiffCode(Enum):
-    SAME = 0
-    RIGHT_ONLY = 1
-    LEFT_ONLY = 2
-    CHANGED = 3
-
-
-@dataclass
-class DiffChange:
-    left: List[int]
-    right: List[int]
-    newline: str
-    skip_lines: int
-
-
-@dataclass
-class Diff:
-    code: DiffCode
-    line: str
-    left_changes: List[int] | None = None
-    right_changes: List[int] | None = None
-    newline: str | None = None
+from difflib_parser.diff import Diff
+from difflib_parser.diff_change import DiffChange
+from difflib_parser.diff_code import DiffCode
+from difflib_parser.diff_line import DiffLine
+from difflib_parser.diff_line_code import DiffLineCode
 
 
 # Parser inspired by https://github.com/yebrahim/difflibparser/blob/master/difflibparser.py
-class DiffParser:
+class DifflibParser:
     def __init__(self, left_text: List[str], right_text: List[str]):
         self.__left_text = left_text
         self.__right_text = right_text
         self.__diff = list(difflib.ndiff(self.__left_text, self.__right_text))
-        self.__line_no = 0
 
     def iter_diffs(self) -> Iterator[Diff]:
-        while self.__line_no < len(self.__diff):
-            current_line = self.__diff[self.__line_no]
+        line_no = 0
+        while line_no < len(self.__diff):
+            current_line = self.__diff[line_no]
             diff_line = DiffLine.parse(current_line)
             if diff_line.line is None:
-                self.__line_no += 1
+                line_no += 1
                 continue
             code = diff_line.code
             diff = Diff(code=DiffCode.SAME, line=diff_line.line)
@@ -51,7 +29,7 @@ class DiffParser:
             if code == DiffLineCode.ADDED:
                 diff.code = DiffCode.RIGHT_ONLY
             elif code == DiffLineCode.REMOVED:
-                change = self.__get_incremental_change(self.__line_no)
+                change = self.__get_incremental_change(line_no)
                 if change is None:
                     diff.code = DiffCode.LEFT_ONLY
                 else:
@@ -59,9 +37,9 @@ class DiffParser:
                     diff.left_changes = change.left
                     diff.right_changes = change.right
                     diff.newline = change.newline
-                    self.__line_no = change.skip_lines
+                    line_no = change.skip_lines
 
-            self.__line_no += 1
+            line_no += 1
             yield diff
 
     def __get_incremental_change(self, line_no: int) -> DiffChange | None:
