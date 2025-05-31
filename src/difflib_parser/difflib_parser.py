@@ -37,7 +37,7 @@ class DifflibParser:
                     diff.left_changes = change.left
                     diff.right_changes = change.right
                     diff.newline = change.newline
-                    line_no = change.skip_lines
+                    line_no += change.skip_lines
 
             line_no += 1
             yield diff
