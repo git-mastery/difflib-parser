@@ -28,3 +28,6 @@ pythonpath = ["src"]
 
 [tool.mypy]
 mypy_path = "src"
+
+[tool.hatch.version]
+path = "src/difflib_parser/version.py"
