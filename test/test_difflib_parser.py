@@ -1,25 +1,25 @@
 from difflib_parser import difflib_parser, DiffCode
 
 
-def test_diff_parser_same_lines():
+def test_difflib_parser_same_lines():
     parser = difflib_parser.DifflibParser(["Hello world"], ["Hello world"])
     for diff in parser.iter_diffs():
         assert diff.code == DiffCode.SAME
 
 
-def test_diff_parser_added_line():
+def test_difflib_parser_added_line():
     parser = difflib_parser.DifflibParser([], ["Hello world"])
     for diff in parser.iter_diffs():
         assert diff.code == DiffCode.RIGHT_ONLY
 
 
-def test_diff_parser_removed_line():
+def test_difflib_parser_removed_line():
     parser = difflib_parser.DifflibParser(["Hello world"], [])
     for diff in parser.iter_diffs():
         assert diff.code == DiffCode.LEFT_ONLY
 
 
-def test_diff_parser_edited_multi_line():
+def test_difflib_parser_edited_multi_line():
     parser = difflib_parser.DifflibParser(
         ["- Milk", "- Eggs", "Bread", "- Apples", "- Ham"],
         ["- Milk", "- Eggs", "Bread", "- Apples", "- Ham1"],
@@ -42,7 +42,7 @@ def test_diff_parser_edited_multi_line():
         i += 1
 
 
-def test_diff_parser_changed_line_pattern_a():
+def test_difflib_parser_changed_line_pattern_a():
     # Pattern a essentially looks at the case where existing characters were added/removed
     parser = difflib_parser.DifflibParser(["Hello world"], ["Hola world"])
     for diff in parser.iter_diffs():
@@ -53,7 +53,7 @@ def test_diff_parser_changed_line_pattern_a():
         assert diff.right_changes == [1, 3]
 
 
-def test_diff_parser_changed_line_pattern_b():
+def test_difflib_parser_changed_line_pattern_b():
     # Pattern b essentially looks at the case where only additions were included
     parser = difflib_parser.DifflibParser(["Hello world"], ["Hello world!"])
     for diff in parser.iter_diffs():
@@ -64,7 +64,7 @@ def test_diff_parser_changed_line_pattern_b():
         assert diff.right_changes == [11]
 
 
-def test_diff_parser_changed_line_pattern_c():
+def test_difflib_parser_changed_line_pattern_c():
     # Pattern c essentially looks at the case where only removals were included
     parser = difflib_parser.DifflibParser(["Hello world"], ["Hello worl"])
     for diff in parser.iter_diffs():
@@ -73,3 +73,27 @@ def test_diff_parser_changed_line_pattern_c():
         assert diff.newline == "Hello worl"
         assert diff.left_changes == [10]
         assert diff.right_changes == []
+
+
+def test_reuse_difflib_parser():
+    parser = difflib_parser.DifflibParser(
+        ["- Milk", "- Eggs", "Bread", "- Apples", "- Ham"],
+        ["- Milk", "- Eggs", "Bread", "- Apples", "- Ham1"],
+    )
+    expected_codes = [
+        DiffCode.SAME,
+        DiffCode.SAME,
+        DiffCode.SAME,
+        DiffCode.SAME,
+        DiffCode.CHANGED,
+    ]
+    for _ in range(2):
+        i = 0
+        for diff in parser.iter_diffs():
+            assert diff.code == expected_codes[i]
+            if diff.code == DiffCode.CHANGED:
+                assert diff.line == "- Ham"
+                assert diff.newline == "- Ham1"
+                assert diff.left_changes == []
+                assert diff.right_changes == [5]
+            i += 1
