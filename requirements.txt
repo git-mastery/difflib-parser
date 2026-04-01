@@ -1,4 +1,0 @@
-pytest
-twine
-build
-mypy
